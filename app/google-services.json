@@ -1,0 +1,45 @@
+{
+  "project_info": {
+    "project_number": "1034914927686",
+    "firebase_url": "https://fabapp-db934.firebaseio.com",
+    "project_id": "fabapp-db934",
+    "storage_bucket": "fabapp-db934.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1034914927686:android:e4927ffe0291e438",
+        "android_client_info": {
+          "package_name": "com.example.thita.fabapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1034914927686-jj86r449atpcrerbppfa901mrm9fisu4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBn7zNhiyvcsVBT6eIKTOghQGhKrhKURq0"
+        },
+        {
+          "current_key": "AIzaSyBn7zNhiyvcsVBT6eIKTOghQGhKrhKURq0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

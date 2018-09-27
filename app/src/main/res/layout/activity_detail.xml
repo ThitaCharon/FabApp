@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginStart="25dp"
+    android:layout_marginLeft="25dp"
+    android:layout_marginRight="25dp">
+    <ImageView
+        android:id="@+id/image_view"
+        android:layout_width="200dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="25dp"
+        android:scaleType="centerCrop"
+        android:background="@color/colorGray" />
+    <Button
+        android:id="@+id/pick_image_btn"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_margin="16dp"
+        android:text="@string/add_image"
+        android:textColor="@color/colorWhite"
+        android:background="@color/colorPrimary"/>
+    <TextView
+        android:id="@+id/title_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:text="Title :"
+        android:textSize="24sp"
+        android:fontFamily="sans-serif"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimary"/>
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/title_editText"
+        android:layout_marginTop="20dp"
+        android:hint="enter order name here"
+        android:gravity="center"/>
+    <TextView
+        android:id="@+id/quantity_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:text="Quantity :"
+        android:textSize="24sp"
+        android:fontFamily="sans-serif"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimary"/>
+    <TextView
+        android:id="@+id/unit_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:text="Unit :"
+        android:textSize="24sp"
+        android:fontFamily="sans-serif"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimary"/>
+    <Button
+        android:id="@+id/order_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="ORDER"
+        android:textSize="34sp"
+        android:textColor="@color/colorWhite"
+        android:background="@color/colorPrimary"
+        android:paddingHorizontal="50dp"/>
+
+
+</LinearLayout>
