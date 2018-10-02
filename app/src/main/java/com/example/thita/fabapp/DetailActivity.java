@@ -31,11 +31,11 @@ import java.io.IOException;
 
 public class DetailActivity extends AppCompatActivity {
     // Folder path for Firebase Storage.
-    public String Storage_Path = "all_order_uploadss";
+    public static String Storage_Path = "all_order_uploadss";
     // Root Database Name for Firebase Database.
-    public String Database_Path = "all_order_uploads_database";
+    public static String Database_Path = "all_order_uploads_database";
     // Creating button.
-    private Button chooseImageBtn, uploadImageBtn;
+    public Button chooseImageBtn, uploadImageBtn;
     // Creating EditText.
     private EditText imageName;
     // Creating ImageView.
@@ -48,6 +48,8 @@ public class DetailActivity extends AppCompatActivity {
     // Creating StorageReference and DatabaseReference object.
     public StorageReference storageReference;
     public DatabaseReference databaseReference;
+
+    public Button DisplayImageButton;
 
 
     @Override
@@ -62,7 +64,8 @@ public class DetailActivity extends AppCompatActivity {
         uploadImageBtn = (Button)findViewById(R.id.order_btn);
         imageName = (EditText)findViewById(R.id.title_editText);
         selectImage = (ImageView)findViewById(R.id.image_view);
-        progressDialog = new ProgressDialog(getApplicationContext());
+        DisplayImageButton = (Button)findViewById(R.id.DisplayImagesButton);
+        progressDialog = new ProgressDialog(DetailActivity.this);
 
         chooseImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,6 +82,15 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 UploadImageFileToFirebaseStorage();
+            }
+        });
+
+        DisplayImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(DetailActivity.this, DisplayImagesActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -114,7 +126,6 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
-    // TODO step 13
     // Creating Method to get the selected image file Extension from File Path URI.
     public String GetFileExtension(Uri uri) {
 
@@ -126,8 +137,6 @@ public class DetailActivity extends AppCompatActivity {
         return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri)) ;
     }
 
-
-    // TODO step 14
     // Creating UploadImageFileToFirebaseStorage method to upload image on storage.
     public void UploadImageFileToFirebaseStorage() {
 
@@ -139,7 +148,7 @@ public class DetailActivity extends AppCompatActivity {
             progressDialog.setTitle("Uploading...");
              **/
             // Showing progressDialog.
-//            progressDialog.show();
+            progressDialog.show();
 
 
             // Creating second StorageReference.
