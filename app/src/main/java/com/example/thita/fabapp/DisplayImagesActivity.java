@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
 import com.google.firebase.database.DataSnapshot;
@@ -42,7 +43,6 @@ public class DisplayImagesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display);
-
         // Assign id to RecyclerView.
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
 
@@ -70,9 +70,11 @@ public class DisplayImagesActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
 
+
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     ImageUploadInfo imageUploadInfo = postSnapshot.getValue(ImageUploadInfo.class);
                     mList.add(imageUploadInfo);
+                    Log.e("Image info ", imageUploadInfo.toString());
                 }
 
                 mAdapter = new RecyclerViewAdapter(getApplicationContext(), mList);

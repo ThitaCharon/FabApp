@@ -5,7 +5,9 @@ public class ImageUploadInfo {
     public String imageURL;
 
     //constructor
-    public ImageUploadInfo(){}
+    public ImageUploadInfo() {
+    }
+
     //parameter constructor
     public ImageUploadInfo(String imgName , String imgURL){
         this.imageName = imgName;
