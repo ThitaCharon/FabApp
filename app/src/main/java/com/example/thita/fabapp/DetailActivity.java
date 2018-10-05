@@ -24,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
@@ -40,13 +41,14 @@ public class DetailActivity extends AppCompatActivity {
     private EditText mImageText;
 
     // Image request code for onActivityResult() .
-    public static final int PICK_IMAGE_REQUEST_CODE = 9;
+    public static final int PICK_IMAGE_REQUEST_CODE = 1;
     private ProgressBar mProgressBar ;
     // Creating URI filepath
     public Uri mImageUri, FilePathUri;
     // Creating StorageReference and DatabaseReference object.
-    public StorageReference storageRef;
-    public DatabaseReference databaseRef;
+    private StorageReference storageRef;
+    private DatabaseReference databaseRef;
+    private StorageTask mUploadTask;
 
 
     @Override
@@ -76,8 +78,11 @@ public class DetailActivity extends AppCompatActivity {
         mUploadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                upLoadOrder();
-//                UploadImageFileToFirebaseStorage();
+                if (mUploadTask != null && mUploadTask.isInProgress()){
+                    Toast.makeText(DetailActivity.this, "Upload in progress", Toast.LENGTH_SHORT).show();
+                }else {
+                    upLoadOrder();
+                }
             }
         });
 
@@ -102,7 +107,7 @@ public class DetailActivity extends AppCompatActivity {
     private void upLoadOrder() {
         if (mImageUri != null){
             StorageReference fileRef = storageRef.child(System.currentTimeMillis() + "." + getFileExtension(mImageUri));
-            fileRef.putFile(mImageUri)
+            mUploadTask = fileRef.putFile(mImageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -117,8 +122,9 @@ public class DetailActivity extends AppCompatActivity {
                             Toast.makeText(DetailActivity.this, "Upload Successful", Toast.LENGTH_LONG).show();
                             ImageUploadInfo uploadItem = new ImageUploadInfo(mImageText.getText().toString().trim(),taskSnapshot.getStorage().getDownloadUrl().toString());
                             String uploadId = databaseRef.push().getKey();
-                            databaseRef.child(uploadId).setValue(uploadId);
-
+                            databaseRef.child(uploadId).setValue(uploadItem);
+                            // clear input
+                            resetInput();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -200,86 +206,86 @@ public class DetailActivity extends AppCompatActivity {
 
 
     /** previous code**/
-
-    // Creating Method to get the selected image file Extension from File Path URI.
-    public String GetFileExtension(Uri uri) {
-        ContentResolver contentResolver = getContentResolver();
-        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-        // Returning the file Extension.
-        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri)) ;
-    }
-
-    // Creating UploadImageFileToFirebaseStorage method to upload image on storage.
-    public void UploadImageFileToFirebaseStorage() {
-
-        // Checking whether FilePathUri Is empty or not.
-        if (FilePathUri != null) {
-
-            /**
-            // Setting progressDialog Title.
-            progressDialog.setTitle("Uploading...");
-             **/
-            // Showing progressDialog.
-//            mProgressBar.show();
-
-
-            // Creating second StorageReference.
-            StorageReference storageReference2nd = storageRef.child(Storage_Path + System.currentTimeMillis() + "." + GetFileExtension(FilePathUri));
-            Log.d("File Extension : ----", GetFileExtension(FilePathUri));
-            Log.d("Storage Path : ----", Storage_Path + " Time : " + System.currentTimeMillis());
-
-            // Adding addOnSuccessListener to second StorageReference.
-            storageReference2nd.putFile(FilePathUri)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-                            // Getting image name from EditText and store into string variable.
-                            String TempImageName = mImageText.getText().toString().trim();
-                            // Hiding the progressDialog after done uploading.
-//                            progressDialog.dismiss();
-                            // Showing toast message after done uploading.
-                            Toast.makeText(getApplicationContext(), "Item Uploaded ", Toast.LENGTH_LONG).show();
-                            @SuppressWarnings("VisibleForTests")
-                            ImageUploadInfo imageUploadInfo = new ImageUploadInfo(TempImageName, taskSnapshot.getStorage().getDownloadUrl().toString());
-
-                            // Getting image upload ID.
-                            String ImageUploadId = databaseRef.push().getKey();
-
-                            // Adding image upload id s child element into databaseReference.
-                            databaseRef.child(ImageUploadId).setValue(imageUploadInfo);
-
-                            //reset data for next order
-                            resetInput();
-                        }
-                    })
-                    // If something goes wrong .
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-
-                            // Hiding the progressDialog.
-//                            progressDialog.dismiss();
-
-                            // Showing exception error message.
-                            Toast.makeText(DetailActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    })
-
-                    // On progress change upload time.
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-
-                            // Setting progressDialog Title.
-//                            progressDialog.setTitle("Image is Uploading...");
-                        }
-                    });
-        }
-        else {
-            Toast.makeText(DetailActivity.this, "Please Select Image or Add Image Name", Toast.LENGTH_LONG).show();
-        }
-    }
+//
+//    // Creating Method to get the selected image file Extension from File Path URI.
+//    public String GetFileExtension(Uri uri) {
+//        ContentResolver contentResolver = getContentResolver();
+//        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+//        // Returning the file Extension.
+//        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri)) ;
+//    }
+//
+//    // Creating UploadImageFileToFirebaseStorage method to upload image on storage.
+//    public void UploadImageFileToFirebaseStorage() {
+//
+//        // Checking whether FilePathUri Is empty or not.
+//        if (FilePathUri != null) {
+//
+//            /**
+//            // Setting progressDialog Title.
+//            progressDialog.setTitle("Uploading...");
+//             **/
+//            // Showing progressDialog.
+////            mProgressBar.show();
+//
+//
+//            // Creating second StorageReference.
+//            StorageReference storageReference2nd = storageRef.child(Storage_Path + System.currentTimeMillis() + "." + GetFileExtension(FilePathUri));
+//            Log.d("File Extension : ----", GetFileExtension(FilePathUri));
+//            Log.d("Storage Path : ----", Storage_Path + " Time : " + System.currentTimeMillis());
+//
+//            // Adding addOnSuccessListener to second StorageReference.
+//            storageReference2nd.putFile(FilePathUri)
+//                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                        @Override
+//                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//
+//                            // Getting image name from EditText and store into string variable.
+//                            String TempImageName = mImageText.getText().toString().trim();
+//                            // Hiding the progressDialog after done uploading.
+////                            progressDialog.dismiss();
+//                            // Showing toast message after done uploading.
+//                            Toast.makeText(getApplicationContext(), "Item Uploaded ", Toast.LENGTH_LONG).show();
+//                            @SuppressWarnings("VisibleForTests")
+//                            ImageUploadInfo imageUploadInfo = new ImageUploadInfo(TempImageName, taskSnapshot.getStorage().getDownloadUrl().toString());
+//
+//                            // Getting image upload ID.
+//                            String ImageUploadId = databaseRef.push().getKey();
+//
+//                            // Adding image upload id s child element into databaseReference.
+//                            databaseRef.child(ImageUploadId).setValue(imageUploadInfo);
+//
+//                            //reset data for next order
+//                            resetInput();
+//                        }
+//                    })
+//                    // If something goes wrong .
+//                    .addOnFailureListener(new OnFailureListener() {
+//                        @Override
+//                        public void onFailure(@NonNull Exception exception) {
+//
+//                            // Hiding the progressDialog.
+////                            progressDialog.dismiss();
+//
+//                            // Showing exception error message.
+//                            Toast.makeText(DetailActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
+//                        }
+//                    })
+//
+//                    // On progress change upload time.
+//                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+//                        @Override
+//                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+//
+//                            // Setting progressDialog Title.
+////                            progressDialog.setTitle("Image is Uploading...");
+//                        }
+//                    });
+//        }
+//        else {
+//            Toast.makeText(DetailActivity.this, "Please Select Image or Add Image Name", Toast.LENGTH_LONG).show();
+//        }
+//    }
 
 
 

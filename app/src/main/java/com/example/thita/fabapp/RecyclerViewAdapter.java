@@ -9,52 +9,48 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
     private Context mContext;
-    private List<ImageUploadInfo> mMainImageUploadInfoList;
+    private List<ImageUploadInfo> mListUpload;
 
-    public RecyclerViewAdapter (Context context, List<ImageUploadInfo> imagelist){
+    public RecyclerViewAdapter (Context context, List<ImageUploadInfo> upload){
         mContext = context;
-        mMainImageUploadInfoList = imagelist;
+        mListUpload = upload;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycleview, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view);
-
-        return viewHolder;
+        return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        ImageUploadInfo UploadInfo = mMainImageUploadInfoList.get(position);
-
-        holder.imageNameTextView.setText(UploadInfo.getImageName());
-
-        //Loading image from Glide library.
-        Glide.with(mContext).load(UploadInfo.getImageURL()).into(holder.imageView);
+        ImageUploadInfo target = mListUpload.get(position);
+        holder.imageNameTextView.setText(target.getImageName());
+        Picasso.with(mContext).load(target.getImageURL()).fit().centerCrop().into(holder.imageView);
     }
 
     @Override
     public int getItemCount() {
-        if (mMainImageUploadInfoList == null)   { return  0;}
-        return mMainImageUploadInfoList.size();
+        if (mListUpload == null)   { return  0;}
+        return mListUpload.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         public ImageView imageView;
         public TextView  imageNameTextView;
+
         public ViewHolder(View itemView) {
             super(itemView);
-            imageView = (ImageView) itemView.findViewById(R.id.imageView);
+            imageView = (ImageView) itemView.findViewById(R.id.image_view_list);
             imageNameTextView = (TextView) itemView.findViewById(R.id.imageNameTextView);
         }
     }

@@ -23,11 +23,9 @@ public class ImageUploadInfo {
     public String getImageURL (){
         return imageURL;
     }
-
     public void  setImageName(String name){
         imageName = name;
     }
-
     public void  setImageURL(String url){
         imageURL = url;
     }

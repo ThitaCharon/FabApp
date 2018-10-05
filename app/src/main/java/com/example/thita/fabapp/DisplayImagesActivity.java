@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -23,19 +24,14 @@ import java.util.List;
 public class DisplayImagesActivity extends AppCompatActivity {
 
     // Creating DatabaseReference.
-    private DatabaseReference databaseReference;
+    private DatabaseReference mDatabaseRef;
 
-    // Creating RecyclerView.
     public RecyclerView mRecyclerView;
-
-    // Creating RecyclerView.Adapter.
     private RecyclerView.Adapter mAdapter;
-
-    // Creating Progress dialog
-    private ProgressDialog mProgressDialog;
+    private ProgressBar mProgressBar;
 
     // Creating List of ImageUploadInfo class.
-    private List<ImageUploadInfo> mList = new ArrayList<>();
+    private List<ImageUploadInfo> mListUpload ;
 
     public FloatingActionButton mFabbtn;
 
@@ -46,42 +42,26 @@ public class DisplayImagesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_display);
         // Assign id to RecyclerView.
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-
-        // Setting RecyclerView size true.
         mRecyclerView.setHasFixedSize(true);
-
-        // Setting RecyclerView layout as LinearLayout.
         mRecyclerView.setLayoutManager(new LinearLayoutManager(DisplayImagesActivity.this));
 
-        // Assign activity this to progress dialog.
-        mProgressDialog = new ProgressDialog(DisplayImagesActivity.this);
+        mListUpload = new ArrayList<>();
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference(DetailActivity.Database_Path);
 
-        // Setting up message in Progress dialog.
-        mProgressDialog.setMessage("Loading..Images From Firebase.");
 
-        // Showing progress dialog.
-        mProgressDialog.show();
-
-        // Setting up Firebase image upload folder path in databaseReference.
-        // The path is already defined in MainActivity.
-        databaseReference = FirebaseDatabase.getInstance().getReference(DetailActivity.Database_Path);
-
-        // Adding Add Value Event Listener to databaseReference.
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-
+                mListUpload.clear();
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                    ImageUploadInfo imageUploadInfo = postSnapshot.getValue(ImageUploadInfo.class);
-                    mList.add(imageUploadInfo);
-                    Log.e("Image info ", imageUploadInfo.toString());
+                    ImageUploadInfo upload = postSnapshot.getValue(ImageUploadInfo.class);
+                    String name = upload.getImageName();
+                    String url = upload.getImageURL();
+                    mListUpload.add(upload);
                 }
 
-                mAdapter = new RecyclerViewAdapter(getApplicationContext(), mList);
+                mAdapter = new RecyclerViewAdapter(DisplayImagesActivity.this, mListUpload);
                 mRecyclerView.setAdapter(mAdapter);
-
-                // Hiding the progress dialog.
-                mProgressDialog.dismiss();
                 Toast.makeText(DisplayImagesActivity.this, "addValueEventListener success", Toast.LENGTH_LONG).show();
 
             }
@@ -89,8 +69,7 @@ public class DisplayImagesActivity extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
-                // Hiding the progress dialog.
-                mProgressDialog.dismiss();
+
                 Toast.makeText(DisplayImagesActivity.this, "addValueEventListener error", Toast.LENGTH_LONG).show();
 
 
