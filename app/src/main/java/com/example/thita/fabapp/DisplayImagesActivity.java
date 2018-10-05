@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -70,7 +71,6 @@ public class DisplayImagesActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
 
-
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     ImageUploadInfo imageUploadInfo = postSnapshot.getValue(ImageUploadInfo.class);
                     mList.add(imageUploadInfo);
@@ -78,11 +78,12 @@ public class DisplayImagesActivity extends AppCompatActivity {
                 }
 
                 mAdapter = new RecyclerViewAdapter(getApplicationContext(), mList);
-
                 mRecyclerView.setAdapter(mAdapter);
 
                 // Hiding the progress dialog.
                 mProgressDialog.dismiss();
+                Toast.makeText(DisplayImagesActivity.this, "addValueEventListener success", Toast.LENGTH_LONG).show();
+
             }
 
             @Override
@@ -90,6 +91,8 @@ public class DisplayImagesActivity extends AppCompatActivity {
 
                 // Hiding the progress dialog.
                 mProgressDialog.dismiss();
+                Toast.makeText(DisplayImagesActivity.this, "addValueEventListener error", Toast.LENGTH_LONG).show();
+
 
             }
         });
