@@ -28,7 +28,7 @@ public class DisplayImagesActivity extends AppCompatActivity {
 
     public RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
-    private ProgressBar mProgressBar;
+    private ProgressBar mProgress;
 
     // Creating List of ImageUploadInfo class.
     private List<ImageUploadInfo> mListUpload ;
@@ -40,14 +40,15 @@ public class DisplayImagesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display);
+
         // Assign id to RecyclerView.
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(DisplayImagesActivity.this));
 
+        mProgress = (ProgressBar)findViewById(R.id.progerss_list);
         mListUpload = new ArrayList<>();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference(DetailActivity.Database_Path);
-
 
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -62,17 +63,16 @@ public class DisplayImagesActivity extends AppCompatActivity {
 
                 mAdapter = new RecyclerViewAdapter(DisplayImagesActivity.this, mListUpload);
                 mRecyclerView.setAdapter(mAdapter);
+
+                mProgress.setVisibility(View.INVISIBLE);
                 Toast.makeText(DisplayImagesActivity.this, "addValueEventListener success", Toast.LENGTH_LONG).show();
 
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
-
                 Toast.makeText(DisplayImagesActivity.this, "addValueEventListener error", Toast.LENGTH_LONG).show();
-
-
+                mProgress.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -86,4 +86,6 @@ public class DisplayImagesActivity extends AppCompatActivity {
         });
 
     }
+
+
 }

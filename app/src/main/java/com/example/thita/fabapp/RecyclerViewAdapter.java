@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -34,7 +33,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(ViewHolder holder, int position) {
         ImageUploadInfo target = mListUpload.get(position);
         holder.imageNameTextView.setText(target.getImageName());
-        Picasso.with(mContext).load(target.getImageURL()).fit().centerCrop().into(holder.imageView);
+        Picasso.with(mContext)
+                .load(target.getImageURL())
+                .placeholder(R.mipmap.ic_launcher)
+                .fit().centerCrop()
+                .into(holder.imageView);
     }
 
     @Override
@@ -44,14 +47,21 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-
         public ImageView imageView;
-        public TextView  imageNameTextView;
+        public TextView imageNameTextView;
 
         public ViewHolder(View itemView) {
             super(itemView);
             imageView = (ImageView) itemView.findViewById(R.id.image_view_list);
             imageNameTextView = (TextView) itemView.findViewById(R.id.imageNameTextView);
+
+        }
+
+        public void removeItem(int position) {
+            mListUpload.remove(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, mListUpload.size());
         }
     }
+
 }
