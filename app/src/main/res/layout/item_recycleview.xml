@@ -7,12 +7,16 @@ android:id="@+id/cardview"
 card_view:cardElevation="5dp"
 card_view:contentPadding="5dp"
 card_view:cardCornerRadius="5dp"
-card_view:cardMaxElevation="5dp">
+card_view:cardMaxElevation="5dp"
+card_view:cardBackgroundColor="@color/colorPrimary"
+card_view:cardUseCompatPadding="true">
+
 
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#ECEFF1">
+    android:background="#ECEFF1"
+    android:elevation="@dimen/fab_margin">
     <ImageView
         android:id="@+id/image_view_list"
         android:layout_width="100dp"

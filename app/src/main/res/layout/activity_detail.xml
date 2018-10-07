@@ -15,12 +15,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal">
 
         <ImageView
             android:id="@+id/image_view"
             android:layout_width="200dp"
-            android:layout_height="150dp"
+            android:layout_height="200dp"
             android:layout_marginTop="25dp"
             android:scaleType="centerCrop"
             android:background="@color/colorGray" />
@@ -30,7 +31,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="25dp">
+            android:layout_marginTop="25dp"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin">
 
             <Button
                 android:id="@+id/showLists"
@@ -39,9 +41,10 @@
                 android:layout_below="@+id/buttonUploadImage"
                 android:layout_margin="16dp"
                 android:layout_marginTop="16dp"
-                android:background="@color/colorPrimary"
-                android:text="  Show Image  "
-                android:textColor="@color/colorWhite" />
+                android:background="@color/colorAccent"
+                android:text="@string/show"
+                android:textColor="@color/colorWhite"
+                android:layout_gravity="center_horizontal"/>
 
             <Button
                 android:id="@+id/pick_image_btn"
@@ -56,9 +59,12 @@
 
     </LinearLayout>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <TextView
         android:id="@+id/title_label"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="16dp"
         android:text="Title :"
@@ -72,27 +78,55 @@
         android:id="@+id/title_editText"
         android:layout_marginTop="8dp"
         android:hint="enter order name here"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_toRightOf="@id/title_label"
         android:gravity="center"/>
     <TextView
         android:id="@+id/quantity_label"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="16dp"
         android:text="Quantity :"
         android:textSize="24sp"
         android:fontFamily="sans-serif"
         android:textStyle="bold"
-        android:textColor="@color/colorPrimary"/>
+        android:textColor="@color/colorPrimary"
+        android:layout_below="@id/title_label"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/quantity_text"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:hint="#1"
+        android:inputType="number"
+        android:layout_toRightOf="@id/quantity_label"
+        android:layout_below="@id/title_editText"
+        android:gravity="center"/>
     <TextView
         android:id="@+id/unit_label"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="16dp"
         android:text="Unit :"
         android:textSize="24sp"
         android:fontFamily="sans-serif"
         android:textStyle="bold"
-        android:textColor="@color/colorPrimary"/>
+        android:textColor="@color/colorPrimary"
+        android:layout_below="@id/quantity_label" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/unit_text"
+        android:layout_marginTop="8dp"
+        android:hint="unit"
+        android:layout_toRightOf="@id/unit_label"
+        android:layout_below="@id/quantity_text"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:gravity="center" />
+    </RelativeLayout>
 
     <Button
         android:id="@+id/order_btn"
@@ -103,8 +137,7 @@
         android:textSize="34sp"
         android:textColor="@color/colorWhite"
         android:background="@color/colorPrimary"
-        android:paddingHorizontal="50dp"/>
-
-
+        android:layout_margin="@dimen/fab_margin"
+        android:paddingHorizontal="50dp" />
 
 </LinearLayout>

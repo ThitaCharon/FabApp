@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -16,10 +18,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     private Context mContext;
     private List<ImageUploadInfo> mListUpload;
+    private OnModify mListener;
 
     public RecyclerViewAdapter (Context context, List<ImageUploadInfo> upload){
         mContext = context;
         mListUpload = upload;
+    }
+
+    public RecyclerViewAdapter(OnModify listener){
+        this.mListener = listener;
     }
 
     @NonNull
@@ -29,8 +36,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return new ViewHolder(view);
     }
 
-//    public void deleteItem(int position){
-//
+    public void removeItem(int position) {
+        Toast.makeText(mContext, "Call remove", Toast.LENGTH_LONG).show();
+//        mListUpload.remove(position);
+////        notifyItemRemoved(position);
+    }
+
+//    public void restoreItem(String item, int position) {
+//        mListUpload.add(position, item);
+//        notifyItemInserted(position);
 //    }
 
     @Override
@@ -50,6 +64,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return mListUpload.size();
     }
 
+//    public void removeItem(int position) {
+//        Toast.makeText(mContext, "Call remove", Toast.LENGTH_LONG).show();
+//    }
+
+    public List<ImageUploadInfo> getData() {
+        return mListUpload;
+    }
     public class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView imageView;
         public TextView imageNameTextView;
@@ -59,12 +80,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             imageView = (ImageView) itemView.findViewById(R.id.image_view_list);
             imageNameTextView = (TextView) itemView.findViewById(R.id.imageNameTextView);
         }
-
-        public void removeItem(int position) {
-            mListUpload.remove(position);
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(position, mListUpload.size());
-        }
+    }
+    public interface OnModify{
+        void removeItem(int position);
     }
 
 }

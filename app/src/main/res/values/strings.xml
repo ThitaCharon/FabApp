@@ -4,4 +4,6 @@
     <string name="action_sign_out">Sign Out</string>
     <string name="add_image">Add Image</string>
     <string name="change_image">Change Image</string>
+    <string name="show">List</string>
+
 </resources>
