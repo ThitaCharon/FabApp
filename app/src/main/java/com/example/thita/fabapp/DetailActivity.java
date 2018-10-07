@@ -17,8 +17,11 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -105,13 +108,24 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void upLoadOrder() {
-        if (mImageUri != null){
-            final StorageReference fileRef = storageRef.child(System.currentTimeMillis() + "." + getFileExtension(mImageUri));
-            mUploadTask = fileRef.putFile(mImageUri)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            // delay for progress to display a moment
+        if (mImageUri != null ) {
+            final StorageReference photoRef = storageRef.child(mImageUri.getLastPathSegment());
+            // Upload file to Firebase Storage
+            photoRef.putFile(mImageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
+                    return photoRef.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
+                        mImageUri = task.getResult();
+                        Log.d("mImageUri", mImageUri.toString());
+                        // delay for progress to display a moment
                             Handler handler = new Handler();
                             handler.postDelayed(new Runnable() {
                                 @Override
@@ -119,38 +133,75 @@ public class DetailActivity extends AppCompatActivity {
                                     mProgressBar.setProgress(0);
                                 }
                             }, 500);
-                            Toast.makeText(DetailActivity.this, "Upload Successful", Toast.LENGTH_LONG).show();
-                            ImageUploadInfo uploadItem = new ImageUploadInfo(mImageText.getText().toString().trim(),taskSnapshot.getStorage().getDownloadUrl().toString());
-                            String uploadId = databaseRef.push().getKey();
-                            databaseRef.child(uploadId).setValue(uploadItem);
-                            // clear input
-                            resetInput();
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(DetailActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0* taskSnapshot.getBytesTransferred()/ taskSnapshot.getTotalByteCount());
-                            mProgressBar.setProgress((int)progress);
-                        }
-                    });
-        } else {
+                        ImageUploadInfo uploadInfo = new ImageUploadInfo(mImageText.getText().toString(), mImageUri.toString());
+                        databaseRef.push().setValue(uploadInfo);
+                        resetInput();
+                    } else {
+                        Toast.makeText(DetailActivity.this, "upload failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        } else if (mImageText != null) {
+            //TODO if no image select
             Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show();
+            ImageUploadInfo uploadInfo = new ImageUploadInfo(mImageText.getText().toString(), null);
+            databaseRef.push().setValue(uploadInfo);
+            resetInput();
+        } else {
+            Toast.makeText(this, "Please state the title", Toast.LENGTH_SHORT).show();
         }
+
+
+//        if (mImageUri != null){
+//            Log.d("URI Testing", mImageUri.toString());
+//            final StorageReference photoRef = storageRef.child(mImageUri.getLastPathSegment());
+////            final StorageReference photoRef = storageRef.child(System.currentTimeMillis() + "." + getFileExtension(mImageUri));
+//            mUploadTask = photoRef.putFile(mImageUri)
+//                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                        @Override
+//                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                            // delay for progress to display a moment
+//                            Handler handler = new Handler();
+//                            handler.postDelayed(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    mProgressBar.setProgress(0);
+//                                }
+//                            }, 500);
+//                            Toast.makeText(DetailActivity.this, "Upload Successful", Toast.LENGTH_LONG).show();
+//                            ImageUploadInfo uploadItem = new ImageUploadInfo(mImageText.getText().toString().trim(),taskSnapshot.getStorage().getDownloadUrl().toString());
+//                            String uploadId = databaseRef.push().getKey();
+//                            databaseRef.child(uploadId).setValue(uploadItem);
+//                            // clear input
+//                            resetInput();
+//                        }
+//                    })
+//                    .addOnFailureListener(new OnFailureListener() {
+//                        @Override
+//                        public void onFailure(@NonNull Exception e) {
+//                            Toast.makeText(DetailActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+//                        }
+//                    })
+//                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+//                        @Override
+//                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+//                            double progress = (100.0* taskSnapshot.getBytesTransferred()/ taskSnapshot.getTotalByteCount());
+//                            mProgressBar.setProgress((int)progress);
+//                        }
+//                    });
+//        } else {
+//            Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show();
+//        }
     }
 
     private void imagePicker() {
         Intent intent_pickImage = new Intent();
         intent_pickImage.setType("image/*");
         intent_pickImage.setAction(Intent.ACTION_GET_CONTENT);
+        intent_pickImage.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
         startActivityForResult(intent_pickImage, PICK_IMAGE_REQUEST_CODE);
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -161,6 +212,7 @@ public class DetailActivity extends AppCompatActivity {
             Picasso.with(this).load(mImageUri).into(mImageView);
         }
     }
+
 
     private void resetInput() {
         mImageText.setText("");

@@ -29,6 +29,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return new ViewHolder(view);
     }
 
+//    public void deleteItem(int position){
+//
+//    }
+
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         ImageUploadInfo target = mListUpload.get(position);
@@ -54,7 +58,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             super(itemView);
             imageView = (ImageView) itemView.findViewById(R.id.image_view_list);
             imageNameTextView = (TextView) itemView.findViewById(R.id.imageNameTextView);
-
         }
 
         public void removeItem(int position) {
