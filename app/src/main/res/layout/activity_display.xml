@@ -32,10 +32,12 @@
 
 
     <ProgressBar
-        android:id="@+id/progerss_list"
+        android:id="@+id/progress_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true"
+        android:layout_centerVertical="true"
+        style="?android:attr/progressBarStyleLarge"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -46,6 +48,8 @@
         android:layout_margin="@dimen/fab_margin"
         android:elevation="6dp"
         app:srcCompat="@android:drawable/ic_dialog_email" />
+
+
 </RelativeLayout>
 
 

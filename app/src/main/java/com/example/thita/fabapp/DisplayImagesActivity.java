@@ -1,13 +1,11 @@
 package com.example.thita.fabapp;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -45,7 +43,7 @@ public class DisplayImagesActivity extends AppCompatActivity {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(DisplayImagesActivity.this));
 
-        mProgress = (ProgressBar)findViewById(R.id.progerss_list);
+        mProgress = (ProgressBar)findViewById(R.id.progress_list);
         mListUpload = new ArrayList<>();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference(DetailActivity.Database_Path);
 
