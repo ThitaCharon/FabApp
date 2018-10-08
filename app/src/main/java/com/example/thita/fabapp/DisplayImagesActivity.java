@@ -1,11 +1,9 @@
 package com.example.thita.fabapp;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,25 +14,27 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.FirebaseError;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DisplayImagesActivity extends AppCompatActivity implements RecyclerViewAdapter.OnModify{
+public class DisplayImagesActivity extends AppCompatActivity implements RecyclerViewAdapter.OnItemClickListener{
 
     // Creating DatabaseReference.
     private DatabaseReference mDatabaseRef;
+    private FirebaseStorage mStorage;
+    private ValueEventListener mDbListener;
 
     public RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    public RecyclerViewAdapter mAdapter;
     private ProgressBar mProgress;
 
     // Creating List of ImageUploadInfo class.
@@ -55,9 +55,13 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
 
         mProgress = (ProgressBar)findViewById(R.id.progress_list);
         mListUpload = new ArrayList<>();
+        mAdapter = new RecyclerViewAdapter(DisplayImagesActivity.this, mListUpload);
+        mRecyclerView.setAdapter(mAdapter);
+
+        mStorage = FirebaseStorage.getInstance();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference(DetailActivity.Database_Path);
 
-        mDatabaseRef.addValueEventListener(new ValueEventListener() {
+        mDbListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 mListUpload.clear();
@@ -65,11 +69,10 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
                     ImageUploadInfo upload = postSnapshot.getValue(ImageUploadInfo.class);
                     String name = upload.getImageName();
                     String url = upload.getImageURL();
+                    upload.setKey(postSnapshot.getKey());
                     mListUpload.add(upload);
                 }
-
-                mAdapter = new RecyclerViewAdapter(DisplayImagesActivity.this, mListUpload);
-                mRecyclerView.setAdapter(mAdapter);
+                mAdapter.notifyDataSetChanged();
 
                 mProgress.setVisibility(View.INVISIBLE);
                 Toast.makeText(DisplayImagesActivity.this, "addValueEventListener success", Toast.LENGTH_SHORT).show();
@@ -103,11 +106,11 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
 
 
                 final int position = viewHolder.getAdapterPosition();
-//                final String item = mAdapter.getData().get(position);
-
-//                mAdapter.removeItem(position);
-
-                Toast.makeText(DisplayImagesActivity.this, "Swipe success", Toast.LENGTH_LONG).show();
+                if (mAdapter.getItemCount() == 1){
+                    removeAllData();
+                }
+                mAdapter.setOnItemClickListener(DisplayImagesActivity.this);
+                onDelete(position);
 
 
 //                Snackbar snackbar = Snackbar
@@ -155,11 +158,28 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
     private void removeAllData() {
         mDatabaseRef.setValue(null);
         Toast.makeText(DisplayImagesActivity.this, "Clear", Toast.LENGTH_SHORT).show();
+    }
 
+
+    @Override
+    public void onDelete(int position) {
+        ImageUploadInfo selectedItem = mListUpload.get(position);
+        final String selectedKey = selectedItem.getKey();
+        StorageReference itermRef = mStorage.getReferenceFromUrl(selectedItem.getImageURL());
+        itermRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                mDatabaseRef.child(selectedKey).removeValue();
+                Toast.makeText(DisplayImagesActivity.this, "Item Deleted ", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override
-    public void removeItem(int position) {
-        mAdapter.getItemId(position);
+    protected void onDestroy() {
+        super.onDestroy();
+        mDatabaseRef.removeEventListener(mDbListener);
     }
+
+
 }

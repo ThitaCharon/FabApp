@@ -1,5 +1,7 @@
 package com.example.thita.fabapp;
 
+import com.google.firebase.database.Exclude;
+
 public class ImageUploadInfo {
     public String imageName;
     public String imageURL;
@@ -24,6 +26,7 @@ public class ImageUploadInfo {
     public String getImageURL (){
         return imageURL;
     }
+    @Exclude
     public String getKey(){
         return key;
     }
@@ -33,6 +36,7 @@ public class ImageUploadInfo {
     public void  setImageURL(String url){
         imageURL = url;
     }
+    @Exclude
     public void  setKey(String key){
         this.key = key;
     }
