@@ -1,6 +1,7 @@
 package com.example.thita.fabapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -44,12 +45,12 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
     private String mUsername;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
-    private ChildEventListener mChildEventListener;
 
     private RecyclerView mRecyclerView;
     private RecyclerViewAdapter mAdapter;
     private ProgressBar mProgress;
 
+    public static final String PREF_COUNT = "PREF ITEM COUNT" ;
     // Creating List of ImageUploadInfo class.
     private List<ImageUploadInfo> mListUpload ;
 
@@ -75,36 +76,29 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
         mFirebaseAuth = FirebaseAuth.getInstance();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference(DetailActivity.Database_Path);
 
-
-
-
-        mDbListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                mListUpload.clear();
-                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                    ImageUploadInfo upload = postSnapshot.getValue(ImageUploadInfo.class);
-                    String name = upload.getImageName();
-                    String url = upload.getImageURL();
-                    upload.setKey(postSnapshot.getKey());
-                    mListUpload.add(upload);
-                }
-                mAdapter.notifyDataSetChanged();
-                mProgress.setVisibility(View.INVISIBLE);
-                Toast.makeText(DisplayImagesActivity.this, "addValueEventListener success", Toast.LENGTH_SHORT).show();
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(DisplayImagesActivity.this, "addValueEventListener error", Toast.LENGTH_LONG).show();
-                mProgress.setVisibility(View.INVISIBLE);
-            }
-        });
-
-
-        enableSwipeToDeleteAndUndo();
-
+//        mDbListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot snapshot) {
+//                mListUpload.clear();
+//                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+//                    ImageUploadInfo upload = postSnapshot.getValue(ImageUploadInfo.class);
+//                    String name = upload.getImageName();
+//                    upload.setKey(postSnapshot.getKey());
+//                    mListUpload.add(upload);
+//                }
+//                mAdapter.notifyDataSetChanged();
+//                mProgress.setVisibility(View.INVISIBLE);
+//                Toast.makeText(DisplayImagesActivity.this, "addValueEventListener success", Toast.LENGTH_SHORT).show();
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                Toast.makeText(DisplayImagesActivity.this, "addValueEventListener error", Toast.LENGTH_LONG).show();
+//                mProgress.setVisibility(View.INVISIBLE);
+//            }
+//        });
+//        enableSwipeToDeleteAndUndo();
 
         mFabbtn = (FloatingActionButton) findViewById(R.id.fab);
 
@@ -125,6 +119,7 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
                     // User is login
 
                     onSignedInInitialize(user.getDisplayName());
+                    performDisplay();
                     Toast.makeText(DisplayImagesActivity.this, "Sign in with " + user.getDisplayName(), Toast.LENGTH_SHORT).show();
 
                 } else {
@@ -146,6 +141,35 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
 
     }//end onCreate()
 
+    private void performDisplay() {
+        mDbListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                mListUpload.clear();
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    ImageUploadInfo upload = postSnapshot.getValue(ImageUploadInfo.class);
+                    String name = upload.getImageName();
+                    upload.setKey(postSnapshot.getKey());
+                    mListUpload.add(upload);
+                }
+                mAdapter.notifyDataSetChanged();
+                SharedPreferences.Editor editor = getSharedPreferences(PREF_COUNT, MODE_PRIVATE).edit();
+                editor.putInt(String.valueOf(R.string.TotalItem), mAdapter.getItemCount());
+                editor.apply();
+                mProgress.setVisibility(View.INVISIBLE);
+                Toast.makeText(DisplayImagesActivity.this, "addValueEventListener success", Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(DisplayImagesActivity.this, "addValueEventListener error", Toast.LENGTH_LONG).show();
+                mProgress.setVisibility(View.INVISIBLE);
+            }
+        });
+        enableSwipeToDeleteAndUndo();
+
+    }
 
 
     private void enableSwipeToDeleteAndUndo() {
@@ -220,6 +244,11 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
             @Override
             public void onSuccess(Void aVoid) {
                 mDatabaseRef.child(selectedKey).removeValue();
+
+                SharedPreferences.Editor editor = getSharedPreferences(PREF_COUNT, MODE_PRIVATE).edit();
+                editor.putInt(String.valueOf(R.string.TotalItem), mAdapter.getItemCount());
+                editor.apply();
+
                 Toast.makeText(DisplayImagesActivity.this, "Item Deleted ", Toast.LENGTH_LONG).show();
             }
         });
@@ -228,8 +257,7 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
 
 
     // TODO Handle Authentication
-    // unset the user name clear the message list and detach the listener
-    // unset the user name clear the message list and detach the listener
+
     private void onSignedOutCleanup() {
         mUsername = ANONYMOUS;
     }
@@ -251,7 +279,6 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
         if (mAuthStateListener != null) {
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
         }
-
     }
 
 }

@@ -5,5 +5,5 @@
     <string name="add_image">Add Image</string>
     <string name="change_image">Change Image</string>
     <string name="show">List</string>
-
+    <string name="TotalItem">0</string>
 </resources>

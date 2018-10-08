@@ -8,7 +8,7 @@ card_view:cardElevation="6dp"
 card_view:contentPadding="4dp"
 card_view:cardCornerRadius="8dp"
 card_view:cardMaxElevation="6dp"
-card_view:cardBackgroundColor="@color/colorAccent"
+card_view:cardBackgroundColor="@color/colorGray"
 card_view:cardUseCompatPadding="true">
 
 
@@ -32,12 +32,12 @@ card_view:cardUseCompatPadding="true">
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/fab_margin"
-            android:layout_marginTop="@dimen/standard_margin"
+            android:layout_marginTop="@dimen/fab_margin"
             android:layout_toRightOf="@+id/image_view_list"
             android:gravity="center"
             android:text="Thai Beer Singha"
-            android:textColor="@color/colorAccent"
-            android:textSize="18sp"
+            android:textColor="@color/colorBlack"
+            android:textSize="20sp"
             android:textStyle="bold"/>
 
         <TextView
@@ -50,7 +50,7 @@ card_view:cardUseCompatPadding="true">
             android:layout_toRightOf="@+id/image_view_list"
             android:gravity="center"
             android:text="#1"
-            android:textColor="@color/colorPink"
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="18sp" />
 
         <TextView
@@ -64,7 +64,7 @@ card_view:cardUseCompatPadding="true">
             android:layout_toRightOf="@+id/image_view_list"
             android:gravity="center"
             android:text="kg"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/colorBlack"
             android:textSize="20sp" />
     </RelativeLayout>
 

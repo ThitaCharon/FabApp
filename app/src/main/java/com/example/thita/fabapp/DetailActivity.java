@@ -130,7 +130,7 @@ public class DetailActivity extends AppCompatActivity {
                                     mProgressBar.setProgress(0);
                                 }
                             }, 500);
-                        ImageUploadInfo uploadInfo = new ImageUploadInfo(mImageText.getText().toString(), mImageUri.toString());
+                        ImageUploadInfo uploadInfo = new ImageUploadInfo(mImageText.getText().toString(), mImageUri.toString(),mQuantity.getText().toString(),mUnit.getText().toString());
                         databaseRef.push().setValue(uploadInfo);
                         resetInput();
                     } else {
@@ -141,7 +141,7 @@ public class DetailActivity extends AppCompatActivity {
         } else if (mImageText != null) {
             //TODO if no image select
             Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show();
-            ImageUploadInfo uploadInfo = new ImageUploadInfo(mImageText.getText().toString(), null);
+            ImageUploadInfo uploadInfo = new ImageUploadInfo(mImageText.getText().toString(), null,mQuantity.getText().toString(),mUnit.getText().toString());
             databaseRef.push().setValue(uploadInfo);
             resetInput();
         } else {

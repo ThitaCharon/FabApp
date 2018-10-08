@@ -37,6 +37,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(ViewHolder holder, int position) {
         ImageUploadInfo target = mListUpload.get(position);
         holder.imageNameTextView.setText(target.getImageName());
+        holder.quntityTextView.setText(target.getImageQuantity());
+        holder.unitTextView.setText(target.getImageUnit());
         Picasso.with(mContext)
                 .load(target.getImageURL())
                 .placeholder(R.mipmap.ic_launcher)
@@ -63,12 +65,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public ImageView imageView;
-        public TextView imageNameTextView;
+        public TextView imageNameTextView, quntityTextView, unitTextView;
 
         public ViewHolder(View itemView) {
             super(itemView);
             imageView = (ImageView) itemView.findViewById(R.id.image_view_list);
             imageNameTextView = (TextView) itemView.findViewById(R.id.item_title_display);
+            quntityTextView = (TextView) itemView.findViewById(R.id.quantity_display);
+            unitTextView = (TextView) itemView.findViewById(R.id.unit_display);
+
             itemView.setOnClickListener(this);
         }
 
