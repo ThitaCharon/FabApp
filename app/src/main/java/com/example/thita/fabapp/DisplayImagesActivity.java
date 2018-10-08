@@ -3,6 +3,7 @@ package com.example.thita.fabapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,7 +15,11 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -24,17 +29,25 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class DisplayImagesActivity extends AppCompatActivity implements RecyclerViewAdapter.OnItemClickListener{
 
     // Creating DatabaseReference.
+    public static final int RC_SIGN_IN = 1;
+    public static final String ANONYMOUS = "anonymous";
     private DatabaseReference mDatabaseRef;
     private FirebaseStorage mStorage;
     private ValueEventListener mDbListener;
 
-    public RecyclerView mRecyclerView;
-    public RecyclerViewAdapter mAdapter;
+    private String mUsername;
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
+    private ChildEventListener mChildEventListener;
+
+    private RecyclerView mRecyclerView;
+    private RecyclerViewAdapter mAdapter;
     private ProgressBar mProgress;
 
     // Creating List of ImageUploadInfo class.
@@ -59,7 +72,11 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
         mRecyclerView.setAdapter(mAdapter);
 
         mStorage = FirebaseStorage.getInstance();
+        mFirebaseAuth = FirebaseAuth.getInstance();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference(DetailActivity.Database_Path);
+
+
+
 
         mDbListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -73,7 +90,6 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
                     mListUpload.add(upload);
                 }
                 mAdapter.notifyDataSetChanged();
-
                 mProgress.setVisibility(View.INVISIBLE);
                 Toast.makeText(DisplayImagesActivity.this, "addValueEventListener success", Toast.LENGTH_SHORT).show();
 
@@ -86,9 +102,12 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
             }
         });
 
+
         enableSwipeToDeleteAndUndo();
 
+
         mFabbtn = (FloatingActionButton) findViewById(R.id.fab);
+
         mFabbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -97,7 +116,37 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
             }
         });
 
-    }
+        //AuthStateListen
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is login
+
+                    onSignedInInitialize(user.getDisplayName());
+                    Toast.makeText(DisplayImagesActivity.this, "Sign in with " + user.getDisplayName(), Toast.LENGTH_SHORT).show();
+
+                } else {
+                    // User is signed out
+                    onSignedOutCleanup();
+                    startActivityForResult(
+                            AuthUI.getInstance()
+                                    .createSignInIntentBuilder()
+                                    .setIsSmartLockEnabled(false)
+                                    .setAvailableProviders(Arrays.asList(
+                                            new AuthUI.IdpConfig.EmailBuilder().build(),
+                                            new AuthUI.IdpConfig.GoogleBuilder().build()))
+                                    .build(),
+                            RC_SIGN_IN);
+
+                }
+            }
+        };
+
+    }//end onCreate()
+
+
 
     private void enableSwipeToDeleteAndUndo() {
         SwipeToDeleteCallback swipeToDeleteCallback = new SwipeToDeleteCallback(this) {
@@ -148,6 +197,7 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
                 removeAllData();
                 return true;
             case R.id.action_sign_out:
+                AuthUI.getInstance().signOut(this);
                 Toast.makeText(DisplayImagesActivity.this, "Sign Out", Toast.LENGTH_SHORT).show();
                 return true;
             default:
@@ -175,11 +225,33 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
         });
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mDatabaseRef.removeEventListener(mDbListener);
+
+
+    // TODO Handle Authentication
+    // unset the user name clear the message list and detach the listener
+    // unset the user name clear the message list and detach the listener
+    private void onSignedOutCleanup() {
+        mUsername = ANONYMOUS;
     }
 
+    // sign in and display to login ui flow
+    private void onSignedInInitialize(String displayName) {
+        mUsername = displayName;
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mAuthStateListener != null) {
+            mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
+        }
+
+    }
 
 }

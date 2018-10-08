@@ -32,19 +32,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return new ViewHolder(view);
     }
 
-    //TODO make a call to removeItem
-//    public void removeItem(int position) {
-//        Toast.makeText(mContext, "removeItem GET CALL", Toast.LENGTH_LONG).show();
-
-//mListener.removeItem(position);
-//        mListUpload.remove(position);
-////        notifyItemRemoved(position);
-//    }
-
-//    public void restoreItem(String item, int position) {
-//        mListUpload.add(position, item);
-//        notifyItemInserted(position);
-//    }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
@@ -81,7 +68,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         public ViewHolder(View itemView) {
             super(itemView);
             imageView = (ImageView) itemView.findViewById(R.id.image_view_list);
-            imageNameTextView = (TextView) itemView.findViewById(R.id.imageNameTextView);
+            imageNameTextView = (TextView) itemView.findViewById(R.id.item_title_display);
             itemView.setOnClickListener(this);
         }
 
@@ -100,9 +87,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         mListener = listener;
     }
 
-//    public void onDelete(int position){
-//        Toast.makeText(mContext, "onDelete Adapter at position" + position, Toast.LENGTH_SHORT).show();
-//    }
 
     public interface OnItemClickListener{
         void onDelete(int position);
