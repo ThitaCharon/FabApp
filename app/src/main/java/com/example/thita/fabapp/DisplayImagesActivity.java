@@ -16,8 +16,16 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.firebase.jobdispatcher.Constraint;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.RetryStrategy;
+import com.firebase.jobdispatcher.Trigger;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -38,9 +46,12 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
     // Creating DatabaseReference.
     public static final int RC_SIGN_IN = 1;
     public static final String ANONYMOUS = "anonymous";
+    private static final String JOB_TAG = "MyJobService";
     private DatabaseReference mDatabaseRef;
     private FirebaseStorage mStorage;
     private ValueEventListener mDbListener;
+    private FirebaseJobDispatcher mDispatcher;
+    private FirebaseAnalytics mAnalytics;
 
     private String mUsername;
     private FirebaseAuth mFirebaseAuth;
@@ -66,6 +77,7 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(DisplayImagesActivity.this));
 
+        mDispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this));
 
         mProgress = (ProgressBar)findViewById(R.id.progress_list);
         mListUpload = new ArrayList<>();
@@ -75,6 +87,9 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
         mStorage = FirebaseStorage.getInstance();
         mFirebaseAuth = FirebaseAuth.getInstance();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference(DetailActivity.Database_Path);
+
+        mAnalytics = FirebaseAnalytics.getInstance(this);
+
 
 //        mDbListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
 //            @Override
@@ -105,6 +120,7 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
         mFabbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mAnalytics.setUserProperty("ADD_ORDER", mAdapter.getItemCount() + "");
                 Intent intent = new Intent(DisplayImagesActivity.this, DetailActivity.class);
                 DisplayImagesActivity.this.startActivity(intent);
             }
@@ -117,8 +133,8 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     // User is login
-
                     onSignedInInitialize(user.getDisplayName());
+                    mAnalytics.setUserProperty("USER_NAME", user.getDisplayName());
                     performDisplay();
                     Toast.makeText(DisplayImagesActivity.this, "Sign in with " + user.getDisplayName(), Toast.LENGTH_SHORT).show();
 
@@ -281,4 +297,27 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
         }
     }
 
+    private void scheduleJob() {
+        Job myJob = mDispatcher.newJobBuilder()
+                .setService(MyJobService.class)
+                .setTag(JOB_TAG)
+                .setRecurring(true)
+                .setTrigger(Trigger.executionWindow(5, 30))
+                .setLifetime(Lifetime.UNTIL_NEXT_BOOT)
+                .setReplaceCurrent(false)
+                .setConstraints(Constraint.ON_ANY_NETWORK)
+                .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
+                .build();
+        mDispatcher.mustSchedule(myJob);
+        Toast.makeText(this, R.string.job_scheduled, Toast.LENGTH_LONG).show();
+    }
+
+    private void cancelJob(String jobTag) {
+        if ("".equals(jobTag)) {
+            mDispatcher.cancelAll();
+        } else {
+            mDispatcher.cancel(jobTag);
+        }
+        Toast.makeText(this, R.string.job_cancelled, Toast.LENGTH_LONG).show();
+    }
 }

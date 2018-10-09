@@ -10,4 +10,5 @@
     <color name="colorLightGreen">#b3d5ffa5</color>
     <color name="colorLightRed">#b3ffffff</color>
     <color name="colorBlack">#f3000000</color>
+    <color name="colorTRAN">#1bf2e8e8</color>
 </resources>

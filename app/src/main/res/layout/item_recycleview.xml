@@ -4,11 +4,11 @@ android:layout_width="match_parent"
 android:layout_height="wrap_content"
 xmlns:card_view="http://schemas.android.com/apk/res-auto"
 android:id="@+id/cardview"
-card_view:cardElevation="6dp"
+card_view:cardElevation="4dp"
 card_view:contentPadding="4dp"
 card_view:cardCornerRadius="8dp"
-card_view:cardMaxElevation="6dp"
-card_view:cardBackgroundColor="@color/colorGray"
+card_view:cardMaxElevation="4dp"
+card_view:cardBackgroundColor="@color/colorTRAN"
 card_view:cardUseCompatPadding="true">
 
 
@@ -16,7 +16,7 @@ card_view:cardUseCompatPadding="true">
         android:id="@+id/item_order"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorLightGreen"
+        android:background="@color/colorLightRed"
         android:elevation="@dimen/fab_margin">
 
         <ImageView

@@ -6,4 +6,6 @@
     <string name="change_image">Change Image</string>
     <string name="show">List</string>
     <string name="TotalItem">0</string>
+    <string name="job_scheduled">job_scheduled</string>
+    <string name="job_cancelled">job_cancelled</string>
 </resources>
