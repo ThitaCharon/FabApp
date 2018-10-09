@@ -273,7 +273,6 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
 
 
     // TODO Handle Authentication
-
     private void onSignedOutCleanup() {
         mUsername = ANONYMOUS;
     }
