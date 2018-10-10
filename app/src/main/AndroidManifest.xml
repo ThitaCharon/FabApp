@@ -3,7 +3,7 @@
     package="com.example.thita.fabapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -14,33 +14,36 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".DisplayImagesActivity"
-            android:launchMode="singleTop"
             android:label="@string/app_name"
+            android:launchMode="singleTop"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:label="@string/app_name" android:name="DetailActivity"
-            android:parentActivityName=".DisplayImagesActivity"/>
+        <activity
+            android:name=".DetailActivity"
+            android:label="@string/app_name"
+            android:parentActivityName=".DisplayImagesActivity" />
 
         <service
-            android:exported="false"
-            android:name=".MyJobService">
+            android:name=".MyJobService"
+            android:exported="false">
             <intent-filter>
-                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
             </intent-filter>
         </service>
 
-        <receiver android:name=".WidgetGrabMe">
+        <receiver android:name=".GrabMeWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
+
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/appwidget_info" />
+                android:resource="@xml/grab_me_widget_provider_info" />
         </receiver>
     </application>
 

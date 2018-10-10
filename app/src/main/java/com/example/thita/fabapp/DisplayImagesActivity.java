@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,19 +15,14 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.firebase.jobdispatcher.Job;
-import com.firebase.jobdispatcher.Lifetime;
-import com.firebase.jobdispatcher.RetryStrategy;
-import com.firebase.jobdispatcher.Trigger;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -61,7 +55,7 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
     private RecyclerViewAdapter mAdapter;
     private ProgressBar mProgress;
 
-    public static final String PREF_COUNT = "PREF ITEM COUNT" ;
+    public static final String PREF_COUNT = "PREF" ;
     // Creating List of ImageUploadInfo class.
     private List<ImageUploadInfo> mListUpload ;
 
@@ -72,6 +66,16 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display);
+
+        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this));
+        Job myJob = dispatcher.newJobBuilder()
+                .setService(MyJobService.class) // the JobService that will be called
+                .setTag("my-unique-tag")        // uniquely identifies the job
+                .build();
+
+        dispatcher.mustSchedule(myJob);
+        dispatcher.cancelAll();
+
         // Assign id to RecyclerView.
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
@@ -89,32 +93,6 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
         mDatabaseRef = FirebaseDatabase.getInstance().getReference(DetailActivity.Database_Path);
 
         mAnalytics = FirebaseAnalytics.getInstance(this);
-
-
-//        mDbListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot snapshot) {
-//                mListUpload.clear();
-//                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-//                    ImageUploadInfo upload = postSnapshot.getValue(ImageUploadInfo.class);
-//                    String name = upload.getImageName();
-//                    upload.setKey(postSnapshot.getKey());
-//                    mListUpload.add(upload);
-//                }
-//                mAdapter.notifyDataSetChanged();
-//                mProgress.setVisibility(View.INVISIBLE);
-//                Toast.makeText(DisplayImagesActivity.this, "addValueEventListener success", Toast.LENGTH_SHORT).show();
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                Toast.makeText(DisplayImagesActivity.this, "addValueEventListener error", Toast.LENGTH_LONG).show();
-//                mProgress.setVisibility(View.INVISIBLE);
-//            }
-//        });
-//        enableSwipeToDeleteAndUndo();
-
         mFabbtn = (FloatingActionButton) findViewById(R.id.fab);
 
         mFabbtn.setOnClickListener(new View.OnClickListener() {
@@ -127,6 +105,8 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
         });
 
         //AuthStateListen
+        grabMeLogIn();
+        /** move to graMeLogIn method
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -154,8 +134,39 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
                 }
             }
         };
+         **/
 
     }//end onCreate()
+
+    private void grabMeLogIn() {
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is login
+                    onSignedInInitialize(user.getDisplayName());
+                    mAnalytics.setUserProperty("USER_NAME", user.getDisplayName());
+                    performDisplay();
+                    Toast.makeText(DisplayImagesActivity.this, "Sign in with " + user.getDisplayName(), Toast.LENGTH_SHORT).show();
+
+                } else {
+                    // User is signed out
+                    onSignedOutCleanup();
+                    startActivityForResult(
+                            AuthUI.getInstance()
+                                    .createSignInIntentBuilder()
+                                    .setIsSmartLockEnabled(false)
+                                    .setAvailableProviders(Arrays.asList(
+                                            new AuthUI.IdpConfig.EmailBuilder().build(),
+                                            new AuthUI.IdpConfig.GoogleBuilder().build()))
+                                    .build(),
+                            RC_SIGN_IN);
+
+                }
+            }
+        };
+    }
 
     private void performDisplay() {
         mDbListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
@@ -170,7 +181,7 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
                 }
                 mAdapter.notifyDataSetChanged();
                 SharedPreferences.Editor editor = getSharedPreferences(PREF_COUNT, MODE_PRIVATE).edit();
-                editor.putInt(String.valueOf(R.string.TotalItem), mAdapter.getItemCount());
+                editor.putString(String.valueOf(R.string.COUNT), mAdapter.getItemCount()+"");
                 editor.apply();
                 mProgress.setVisibility(View.INVISIBLE);
                 Toast.makeText(DisplayImagesActivity.this, "addValueEventListener success", Toast.LENGTH_SHORT).show();
@@ -200,6 +211,9 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
                 }
                 mAdapter.setOnItemClickListener(DisplayImagesActivity.this);
                 onDelete(position);
+                SharedPreferences.Editor editor = getSharedPreferences(PREF_COUNT, MODE_PRIVATE).edit();
+                editor.putString(String.valueOf(R.string.COUNT), mAdapter.getItemCount()+"");
+                editor.apply();
 
 
 //                Snackbar snackbar = Snackbar
@@ -260,11 +274,9 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
             @Override
             public void onSuccess(Void aVoid) {
                 mDatabaseRef.child(selectedKey).removeValue();
-
                 SharedPreferences.Editor editor = getSharedPreferences(PREF_COUNT, MODE_PRIVATE).edit();
-                editor.putInt(String.valueOf(R.string.TotalItem), mAdapter.getItemCount());
+                editor.putInt(String.valueOf(R.string.COUNT), mAdapter.getItemCount());
                 editor.apply();
-
                 Toast.makeText(DisplayImagesActivity.this, "Item Deleted ", Toast.LENGTH_LONG).show();
             }
         });
@@ -275,6 +287,7 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
     // TODO Handle Authentication
     private void onSignedOutCleanup() {
         mUsername = ANONYMOUS;
+        grabMeLogIn();
     }
 
     // sign in and display to login ui flow
@@ -287,6 +300,7 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
     protected void onResume() {
         super.onResume();
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+
     }
     @Override
     protected void onPause() {
@@ -296,27 +310,12 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
         }
     }
 
-    private void scheduleJob() {
-        Job myJob = mDispatcher.newJobBuilder()
-                .setService(MyJobService.class)
-                .setTag(JOB_TAG)
-                .setRecurring(true)
-                .setTrigger(Trigger.executionWindow(5, 30))
-                .setLifetime(Lifetime.UNTIL_NEXT_BOOT)
-                .setReplaceCurrent(false)
-                .setConstraints(Constraint.ON_ANY_NETWORK)
-                .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
-                .build();
-        mDispatcher.mustSchedule(myJob);
-        Toast.makeText(this, R.string.job_scheduled, Toast.LENGTH_LONG).show();
-    }
-
-    private void cancelJob(String jobTag) {
-        if ("".equals(jobTag)) {
-            mDispatcher.cancelAll();
-        } else {
-            mDispatcher.cancel(jobTag);
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mAuthStateListener != null) {
+            mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
         }
-        Toast.makeText(this, R.string.job_cancelled, Toast.LENGTH_LONG).show();
+        grabMeLogIn();
     }
 }

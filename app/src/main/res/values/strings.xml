@@ -5,7 +5,9 @@
     <string name="add_image">Add Image</string>
     <string name="change_image">Change Image</string>
     <string name="show">List</string>
-    <string name="TotalItem">0</string>
+    <string name="COUNT">0</string>
     <string name="job_scheduled">job_scheduled</string>
     <string name="job_cancelled">job_cancelled</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>
