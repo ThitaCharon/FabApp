@@ -8,4 +8,13 @@
     <string name="TotalItem">0</string>
     <string name="job_scheduled">job_scheduled</string>
     <string name="job_cancelled">job_cancelled</string>
+    <string name="FAIL_UPLOAD">Fail upload</string>
+    <string name="NO_IMAGE_SELECTED">No Image Selected</string>
+    <string name="SELECT_TITTLE">Please Select the tittle</string>
+    <string name="SIGN_OUT_ACCOUNT">Sign Out</string>
+    <string name="CLEAR_LIST">Clear</string>
+    <string name="DELETE_ITEM">Item deleted</string>
+    <string name="UPLOADING">Upload inprogress</string>
+    <string name="TOAST_LISTENER_ONSUCCESS">addValueEventListener success</string>
+    <string name="TOAST_LISTENER_ERROR">addValueEventListener error</string>
 </resources>

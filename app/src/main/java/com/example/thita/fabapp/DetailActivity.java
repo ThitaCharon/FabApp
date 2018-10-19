@@ -81,7 +81,7 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (mUploadTask != null && mUploadTask.isInProgress()){
-                    Toast.makeText(DetailActivity.this, "Upload in progress", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DetailActivity.this, R.string.UPLOADING, Toast.LENGTH_SHORT).show();
                 }else {
                     upLoadOrder();
                 }
@@ -134,60 +134,20 @@ public class DetailActivity extends AppCompatActivity {
                         databaseRef.push().setValue(uploadInfo);
                         resetInput();
                     } else {
-                        Toast.makeText(DetailActivity.this, "upload failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(DetailActivity.this, R.string.FAIL_UPLOAD + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
             });
         } else if (mImageText != null) {
             //TODO if no image select
-            Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.NO_IMAGE_SELECTED, Toast.LENGTH_SHORT).show();
             ImageUploadInfo uploadInfo = new ImageUploadInfo(mImageText.getText().toString(), null,mQuantity.getText().toString(),mUnit.getText().toString());
             databaseRef.push().setValue(uploadInfo);
             resetInput();
         } else {
-            Toast.makeText(this, "Please state the title", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.SELECT_TITTLE, Toast.LENGTH_SHORT).show();
         }
 
-//        if (mImageUri != null){
-//            Log.d("URI Testing", mImageUri.toString());
-//            final StorageReference photoRef = storageRef.child(mImageUri.getLastPathSegment());
-////            final StorageReference photoRef = storageRef.child(System.currentTimeMillis() + "." + getFileExtension(mImageUri));
-//            mUploadTask = photoRef.putFile(mImageUri)
-//                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                        @Override
-//                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                            // delay for progress to display a moment
-//                            Handler handler = new Handler();
-//                            handler.postDelayed(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    mProgressBar.setProgress(0);
-//                                }
-//                            }, 500);
-//                            Toast.makeText(DetailActivity.this, "Upload Successful", Toast.LENGTH_LONG).show();
-//                            ImageUploadInfo uploadItem = new ImageUploadInfo(mImageText.getText().toString().trim(),taskSnapshot.getStorage().getDownloadUrl().toString());
-//                            String uploadId = databaseRef.push().getKey();
-//                            databaseRef.child(uploadId).setValue(uploadItem);
-//                            // clear input
-//                            resetInput();
-//                        }
-//                    })
-//                    .addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception e) {
-//                            Toast.makeText(DetailActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-//                        }
-//                    })
-//                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-//                        @Override
-//                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-//                            double progress = (100.0* taskSnapshot.getBytesTransferred()/ taskSnapshot.getTotalByteCount());
-//                            mProgressBar.setProgress((int)progress);
-//                        }
-//                    });
-//        } else {
-//            Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show();
-//        }
     }
 
     private void imagePicker() {

@@ -90,7 +90,6 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
 
         mAnalytics = FirebaseAnalytics.getInstance(this);
 
-
 //        mDbListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(DataSnapshot snapshot) {
@@ -173,13 +172,13 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
                 editor.putInt(String.valueOf(R.string.TotalItem), mAdapter.getItemCount());
                 editor.apply();
                 mProgress.setVisibility(View.INVISIBLE);
-                Toast.makeText(DisplayImagesActivity.this, "addValueEventListener success", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(DisplayImagesActivity.this, R.string.TOAST_LISTENER_ONSUCCESS, Toast.LENGTH_SHORT).show();
 
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(DisplayImagesActivity.this, "addValueEventListener error", Toast.LENGTH_LONG).show();
+                Toast.makeText(DisplayImagesActivity.this, R.string.TOAST_LISTENER_ERROR, Toast.LENGTH_LONG).show();
                 mProgress.setVisibility(View.INVISIBLE);
             }
         });
@@ -193,29 +192,12 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
 
-
                 final int position = viewHolder.getAdapterPosition();
                 if (mAdapter.getItemCount() == 1){
                     removeAllData();
                 }
                 mAdapter.setOnItemClickListener(DisplayImagesActivity.this);
                 onDelete(position);
-
-
-//                Snackbar snackbar = Snackbar
-//                        .make(coordinatorLayout, "Item was removed from the list.", Snackbar.LENGTH_LONG);
-//                snackbar.setAction("UNDO", new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//
-//                        mAdapter.restoreItem(item, position);
-//                        recyclerView.scrollToPosition(position);
-//                    }
-//                });
-
-//                snackbar.setActionTextColor(Color.YELLOW);
-//                snackbar.show();
-
             }
         };
 
@@ -238,7 +220,7 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
                 return true;
             case R.id.action_sign_out:
                 AuthUI.getInstance().signOut(this);
-                Toast.makeText(DisplayImagesActivity.this, "Sign Out", Toast.LENGTH_SHORT).show();
+                Toast.makeText(DisplayImagesActivity.this, R.string.SIGN_OUT_ACCOUNT, Toast.LENGTH_SHORT).show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -247,7 +229,7 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
 
     private void removeAllData() {
         mDatabaseRef.setValue(null);
-        Toast.makeText(DisplayImagesActivity.this, "Clear", Toast.LENGTH_SHORT).show();
+        Toast.makeText(DisplayImagesActivity.this, R.string.CLEAR_LIST, Toast.LENGTH_SHORT).show();
     }
 
 
@@ -265,7 +247,7 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
                 editor.putInt(String.valueOf(R.string.TotalItem), mAdapter.getItemCount());
                 editor.apply();
 
-                Toast.makeText(DisplayImagesActivity.this, "Item Deleted ", Toast.LENGTH_LONG).show();
+                Toast.makeText(DisplayImagesActivity.this, R.string.DELETE_ITEM, Toast.LENGTH_LONG).show();
             }
         });
     }
