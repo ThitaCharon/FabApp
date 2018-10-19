@@ -17,4 +17,7 @@
     <string name="UPLOADING">Upload inprogress</string>
     <string name="TOAST_LISTENER_ONSUCCESS">addValueEventListener success</string>
     <string name="TOAST_LISTENER_ERROR">addValueEventListener error</string>
+    <string name="COUNT">0</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>

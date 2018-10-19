@@ -10,10 +10,25 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
+    signingConfigs {
+        release {
+            // You need to specify either an absolute path or include the
+            // keystore file in the same directory as the build.gradle file.
+            storeFile file("android.jks")
+            storePassword "123456"
+            keyAlias "key0"
+            keyPassword "123456"
+            v2SigningEnabled false
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            release {
+                signingConfig signingConfigs.release
+            }
         }
     }
 
@@ -48,6 +63,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:16.0.1'
     implementation 'com.firebaseui:firebase-ui-auth:4.0.1'
     implementation 'com.firebase:firebase-jobdispatcher:0.8.5'
+
+    //View
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

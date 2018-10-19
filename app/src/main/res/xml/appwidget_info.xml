@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provide
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:initialLayout="@layout/grabme_widget"
+    android:initialLayout="@layout/grabme_widget_provider"
     android:minWidth="110dp"
     android:minHeight="40dp"
     android:resizeMode="vertical|horizontal"

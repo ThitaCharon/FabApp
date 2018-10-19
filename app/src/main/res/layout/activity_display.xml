@@ -35,7 +35,6 @@
         android:elevation="6dp"
         android:src="@drawable/ic_outline_add_white_18dp"
         app:srcCompat="@android:drawable/ic_dialog_email" />
-
 </RelativeLayout>
 
 
