@@ -89,7 +89,6 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
         mDatabaseRef = FirebaseDatabase.getInstance().getReference(DetailActivity.Database_Path);
 
         mAnalytics = FirebaseAnalytics.getInstance(this);
-
 //        mDbListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(DataSnapshot snapshot) {
@@ -119,7 +118,7 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
         mFabbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mAnalytics.setUserProperty("ADD_ORDER", mAdapter.getItemCount() + "");
+                mAnalytics.setUserProperty(String.valueOf(R.string.ADD_ORDER), mAdapter.getItemCount() + "");
                 Intent intent = new Intent(DisplayImagesActivity.this, DetailActivity.class);
                 DisplayImagesActivity.this.startActivity(intent);
             }
@@ -133,9 +132,9 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
                 if (user != null) {
                     // User is login
                     onSignedInInitialize(user.getDisplayName());
-                    mAnalytics.setUserProperty("USER_NAME", user.getDisplayName());
+                    mAnalytics.setUserProperty(String.valueOf(R.string.USERNAME), user.getDisplayName());
                     performDisplay();
-                    Toast.makeText(DisplayImagesActivity.this, R.string.Sign_IN_WITH + user.getDisplayName(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DisplayImagesActivity.this, user.getDisplayName(), Toast.LENGTH_SHORT).show();
 
                 } else {
                     // User is signed out

@@ -23,4 +23,6 @@
     <string name="add_new_order">Add New Order into the list</string>
     <string name="Sign_IN_WITH">Sing In with</string>
     <string name="REMOVE_ITEM">Remove Item get call</string>
+    <string name="USERNAME">Username</string>
+    <string name="ADD_ORDER">ADD_ORDER</string>
 </resources>
