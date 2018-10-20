@@ -53,7 +53,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void removeItem(int position) {
         mListUpload.remove(position);
         notifyItemRemoved(position);
-        Toast.makeText(mContext, "removeItem GET CALL", Toast.LENGTH_LONG).show();
+        Toast.makeText(mContext, R.string.REMOVE_ITEM, Toast.LENGTH_LONG).show();
 
     }
 

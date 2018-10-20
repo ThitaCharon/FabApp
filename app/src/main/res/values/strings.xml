@@ -20,4 +20,7 @@
     <string name="COUNT">0</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+    <string name="add_new_order">Add New Order into the list</string>
+    <string name="Sign_IN_WITH">Sing In with</string>
+    <string name="REMOVE_ITEM">Remove Item get call</string>
 </resources>

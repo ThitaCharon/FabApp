@@ -135,7 +135,7 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
                     onSignedInInitialize(user.getDisplayName());
                     mAnalytics.setUserProperty("USER_NAME", user.getDisplayName());
                     performDisplay();
-                    Toast.makeText(DisplayImagesActivity.this, "Sign in with " + user.getDisplayName(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DisplayImagesActivity.this, R.string.Sign_IN_WITH + user.getDisplayName(), Toast.LENGTH_SHORT).show();
 
                 } else {
                     // User is signed out
