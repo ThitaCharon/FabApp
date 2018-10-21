@@ -170,9 +170,8 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
                 SharedPreferences.Editor editor = getSharedPreferences(PREF_COUNT, MODE_PRIVATE).edit();
                 editor.putInt(String.valueOf(R.string.TotalItem), mAdapter.getItemCount());
                 editor.apply();
+                WidgetUpdateService.startActionUpdateTotal(getApplicationContext(), mAdapter.getItemCount()+"");
                 mProgress.setVisibility(View.INVISIBLE);
-//                Toast.makeText(DisplayImagesActivity.this, R.string.TOAST_LISTENER_ONSUCCESS, Toast.LENGTH_SHORT).show();
-
             }
 
             @Override
@@ -241,11 +240,9 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
             @Override
             public void onSuccess(Void aVoid) {
                 mDatabaseRef.child(selectedKey).removeValue();
-
                 SharedPreferences.Editor editor = getSharedPreferences(PREF_COUNT, MODE_PRIVATE).edit();
                 editor.putInt(String.valueOf(R.string.TotalItem), mAdapter.getItemCount());
                 editor.apply();
-
                 Toast.makeText(DisplayImagesActivity.this, R.string.DELETE_ITEM, Toast.LENGTH_LONG).show();
             }
         });
