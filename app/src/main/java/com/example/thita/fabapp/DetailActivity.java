@@ -121,7 +121,7 @@ public class DetailActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<Uri> task) {
                     if (task.isSuccessful()) {
                         mImageUri = task.getResult();
-                        Log.d("mImageUri", mImageUri.toString());
+//                        Log.d("mImageUri", mImageUri.toString());
                         // delay for progress to display a moment
                             Handler handler = new Handler();
                             handler.postDelayed(new Runnable() {

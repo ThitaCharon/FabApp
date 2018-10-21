@@ -25,4 +25,14 @@
     <string name="REMOVE_ITEM">Remove Item get call</string>
     <string name="USERNAME">Username</string>
     <string name="ADD_ORDER">ADD_ORDER</string>
+    <string name="Item_tittle">Title :</string>
+    <string name="IMAGE_TITTLE_HINT">enter order name here</string>
+    <string name="QUANTITY_LABEL">Quantity :</string>
+    <string name="QUANTITY_HINT">#amount of order</string>
+    <string name="Unit_label">Unit :</string>
+    <string name="Unit_lable_hint">Please identify unit</string>
+    <string name="ORDER">ORDER</string>
+    <string name="TEST_image_tittle">Thai Beer Singha</string>
+    <string name="TEST_Quantity">#1</string>
+    <string name="TEST_Units">kg</string>
 </resources>

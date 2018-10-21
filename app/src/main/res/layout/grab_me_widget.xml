@@ -2,6 +2,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorWhite"
+    android:id="@+id/appwidet_app"
     android:padding="@dimen/widget_margin">
 <!--NEW Version-->
     <Button

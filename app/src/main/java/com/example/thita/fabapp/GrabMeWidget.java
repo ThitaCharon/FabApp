@@ -15,8 +15,8 @@ import android.widget.RemoteViews;
 public class GrabMeWidget extends AppWidgetProvider {
 
         public static String  TOTAL = "24";
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId) {
+    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
+        //get data
         SharedPreferences pref = context.getSharedPreferences(DisplayImagesActivity.PREF_COUNT, context.MODE_PRIVATE);
         int totalItem = pref.getInt(String.valueOf(R.string.TotalItem), 0);
         TOTAL = String .valueOf(totalItem);
@@ -37,10 +37,14 @@ public class GrabMeWidget extends AppWidgetProvider {
         // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
-
         }
     }
 
+    public static void updateAppWidgets (Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        for (int appWidgetId : appWidgetIds) {
+            updateAppWidget(context, appWidgetManager, appWidgetId);
+        }
+    }
     @Override
     public void onEnabled(Context context) {
         // Enter relevant functionality for when the first widget is created
@@ -54,8 +58,11 @@ public class GrabMeWidget extends AppWidgetProvider {
         @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
+//            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.grab_me_widget);
+//            views.setTextViewText(R.id.appwidget_btn, String.valueOf(R.string.TotalItem));
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         ComponentName componentName = new ComponentName(context.getPackageName(), GrabMeWidget.class.getName());
+//            appWidgetManager.updateAppWidget(componentName, views);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(componentName);
         onUpdate(context, appWidgetManager, appWidgetIds);
     }
