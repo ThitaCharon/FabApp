@@ -148,7 +148,6 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
                                             new AuthUI.IdpConfig.GoogleBuilder().build()))
                                     .build(),
                             RC_SIGN_IN);
-
                 }
             }
         };
@@ -170,7 +169,6 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
                 SharedPreferences.Editor editor = getSharedPreferences(PREF_COUNT, MODE_PRIVATE).edit();
                 editor.putInt(String.valueOf(R.string.TotalItem), mAdapter.getItemCount());
                 editor.apply();
-                WidgetUpdateService.startActionUpdateTotal(getApplicationContext(), mAdapter.getItemCount()+"");
                 mProgress.setVisibility(View.INVISIBLE);
             }
 
@@ -181,6 +179,7 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
             }
         });
         enableSwipeToDeleteAndUndo();
+//        WidgetUpdateService.startActionUpdateTotal(getApplicationContext(), mAdapter.getItemCount()+"");
 
     }
 
@@ -247,7 +246,6 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
             }
         });
     }
-
 
 
     // TODO Handle Authentication
