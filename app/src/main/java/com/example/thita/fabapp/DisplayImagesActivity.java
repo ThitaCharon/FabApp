@@ -167,7 +167,7 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
                 }
                 mAdapter.notifyDataSetChanged();
                 SharedPreferences.Editor editor = getSharedPreferences(PREF_COUNT, MODE_PRIVATE).edit();
-                editor.putInt(String.valueOf(R.string.TotalItem), mAdapter.getItemCount());
+                editor.putInt(PREF_COUNT, mAdapter.getItemCount());
                 editor.apply();
                 mProgress.setVisibility(View.INVISIBLE);
             }
@@ -179,7 +179,7 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
             }
         });
         enableSwipeToDeleteAndUndo();
-//        WidgetUpdateService.startActionUpdateTotal(getApplicationContext(), mAdapter.getItemCount()+"");
+        WidgetUpdateService.startActionUpdateTotal(getApplicationContext(), mAdapter.getItemCount()+"");
 
     }
 
@@ -197,7 +197,6 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
                 onDelete(position);
             }
         };
-
         ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeToDeleteCallback);
         itemTouchhelper.attachToRecyclerView(mRecyclerView);
     }
@@ -231,24 +230,33 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
 
 
     @Override
-    public void onDelete(int position) {
+    public void onDelete(final int position) {
         ImageUploadInfo selectedItem = mListUpload.get(position);
         final String selectedKey = selectedItem.getKey();
-        StorageReference itermRef = mStorage.getReferenceFromUrl(selectedItem.getImageURL());
-        itermRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                mDatabaseRef.child(selectedKey).removeValue();
-                SharedPreferences.Editor editor = getSharedPreferences(PREF_COUNT, MODE_PRIVATE).edit();
-                editor.putInt(String.valueOf(R.string.TotalItem), mAdapter.getItemCount());
-                editor.apply();
-                Toast.makeText(DisplayImagesActivity.this, R.string.DELETE_ITEM, Toast.LENGTH_LONG).show();
-            }
-        });
+        if (selectedItem.getImageURL() != null){
+            StorageReference itermRef = mStorage.getReferenceFromUrl(selectedItem.getImageURL());
+            itermRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    mDatabaseRef.child(selectedKey).removeValue();
+                    mAdapter.notifyDataSetChanged();
+                }
+            });
+        } else{
+            mDatabaseRef.child(selectedKey).removeValue();
+            mAdapter.notifyDataSetChanged();
+        }
+        SharedPreferences.Editor editor = getSharedPreferences(PREF_COUNT, MODE_PRIVATE).edit();
+        editor.putInt(String.valueOf(R.string.TotalItem), mAdapter.getItemCount());
+        editor.apply();
+        Toast.makeText(DisplayImagesActivity.this, R.string.DELETE_ITEM, Toast.LENGTH_LONG).show();
+
+
     }
 
 
-    // TODO Handle Authentication
+
+
     private void onSignedOutCleanup() {
         mUsername = ANONYMOUS;
     }

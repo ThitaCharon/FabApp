@@ -15,7 +15,7 @@ import android.util.Log;
 public class WidgetUpdateService extends IntentService {
     public static final String ACTION_UPDATE_TOTAL = "Update Total";
 
-    public WidgetUpdateService(String name) {
+    public WidgetUpdateService() {
         super("WidgetUpdateService");
     }
 

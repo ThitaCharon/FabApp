@@ -22,7 +22,7 @@ public class GrabMeWidget extends AppWidgetProvider {
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
         SharedPreferences pref = context.getSharedPreferences(DisplayImagesActivity.PREF_COUNT, context.MODE_PRIVATE);
-        TOTAL = pref.getString(String.valueOf(R.string.TotalItem), "0");
+        TOTAL = Integer.toString(pref.getInt(DisplayImagesActivity.PREF_COUNT, 0));
         Intent intent = new Intent(context, DisplayImagesActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
