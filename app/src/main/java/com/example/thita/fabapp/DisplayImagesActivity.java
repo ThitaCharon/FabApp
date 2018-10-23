@@ -234,27 +234,25 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
         ImageUploadInfo selectedItem = mListUpload.get(position);
         final String selectedKey = selectedItem.getKey();
         if (selectedItem.getImageURL() != null){
-            StorageReference itermRef = mStorage.getReferenceFromUrl(selectedItem.getImageURL());
-            itermRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    mDatabaseRef.child(selectedKey).removeValue();
-                    mAdapter.notifyDataSetChanged();
-                }
-            });
+            String imageUrl = selectedItem.getImageURL();
+                StorageReference itermRef = mStorage.getReferenceFromUrl(selectedItem.getImageURL());
+                itermRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        mDatabaseRef.child(selectedKey).removeValue();
+                        mAdapter.notifyDataSetChanged();
+                    }
+                });
         } else{
             mDatabaseRef.child(selectedKey).removeValue();
             mAdapter.notifyDataSetChanged();
         }
+
         SharedPreferences.Editor editor = getSharedPreferences(PREF_COUNT, MODE_PRIVATE).edit();
         editor.putInt(String.valueOf(R.string.TotalItem), mAdapter.getItemCount());
         editor.apply();
         Toast.makeText(DisplayImagesActivity.this, R.string.DELETE_ITEM, Toast.LENGTH_LONG).show();
-
-
     }
-
-
 
 
     private void onSignedOutCleanup() {

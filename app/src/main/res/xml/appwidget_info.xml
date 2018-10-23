@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--Previous version-->
 <appwidget-provide
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:initialLayout="@layout/grabme_widget_provider"
-    android:minWidth="110dp"
-    android:minHeight="60dp"
-    android:resizeMode="vertical|horizontal"
-    android:updatePeriodMillis="0"
-    android:widgetCategory="home_screen">
+xmlns:android="http://schemas.android.com/apk/res/android"
+android:initialLayout="@layout/grabme_widget_provider"
+android:minWidth="110dp"
+android:minHeight="60dp"
+android:resizeMode="vertical|horizontal"
+android:updatePeriodMillis="0"
+android:widgetCategory="home_screen">
 </appwidget-provide>

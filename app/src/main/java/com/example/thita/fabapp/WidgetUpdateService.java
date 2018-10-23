@@ -42,7 +42,7 @@ public class WidgetUpdateService extends IntentService {
             SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
             SharedPreferences.Editor prefsEditor = appSharedPrefs.edit();
             prefsEditor.putString(String.valueOf(R.string.TotalItem), totalItem);
-            prefsEditor.commit();
+            prefsEditor.apply();
         }
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, GrabMeWidget.class));
