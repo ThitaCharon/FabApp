@@ -139,7 +139,6 @@ public class DetailActivity extends AppCompatActivity {
                 }
             });
         } else if (mImageText != null) {
-            //TODO if no image select
             Toast.makeText(this, R.string.NO_IMAGE_SELECTED, Toast.LENGTH_SHORT).show();
             ImageUploadInfo uploadInfo = new ImageUploadInfo(mImageText.getText().toString(), null,mQuantity.getText().toString(),mUnit.getText().toString());
             databaseRef.push().setValue(uploadInfo);
@@ -147,7 +146,6 @@ public class DetailActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, R.string.SELECT_TITTLE, Toast.LENGTH_SHORT).show();
         }
-
     }
 
     private void imagePicker() {

@@ -89,30 +89,6 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
         mDatabaseRef = FirebaseDatabase.getInstance().getReference(DetailActivity.Database_Path);
 
         mAnalytics = FirebaseAnalytics.getInstance(this);
-//        mDbListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot snapshot) {
-//                mListUpload.clear();
-//                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-//                    ImageUploadInfo upload = postSnapshot.getValue(ImageUploadInfo.class);
-//                    String name = upload.getImageName();
-//                    upload.setKey(postSnapshot.getKey());
-//                    mListUpload.add(upload);
-//                }
-//                mAdapter.notifyDataSetChanged();
-//                mProgress.setVisibility(View.INVISIBLE);
-//                Toast.makeText(DisplayImagesActivity.this, "addValueEventListener success", Toast.LENGTH_SHORT).show();
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                Toast.makeText(DisplayImagesActivity.this, "addValueEventListener error", Toast.LENGTH_LONG).show();
-//                mProgress.setVisibility(View.INVISIBLE);
-//            }
-//        });
-//        enableSwipeToDeleteAndUndo();
-
         mFabbtn = (FloatingActionButton) findViewById(R.id.fab);
 
         mFabbtn.setOnClickListener(new View.OnClickListener() {
@@ -180,7 +156,6 @@ public class DisplayImagesActivity extends AppCompatActivity implements Recycler
         });
         enableSwipeToDeleteAndUndo();
         WidgetUpdateService.startActionUpdateTotal(getApplicationContext(), mAdapter.getItemCount()+"");
-
     }
 
 

@@ -34,10 +34,7 @@ abstract public class SwipeToDeleteCallback extends ItemTouchHelper.Callback {
         deleteDrawable = ContextCompat.getDrawable(mContext, R.drawable.ic_delete);
         intrinsicWidth = deleteDrawable.getIntrinsicWidth();
         intrinsicHeight = deleteDrawable.getIntrinsicHeight();
-
-
     }
-
 
     @Override
     public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
