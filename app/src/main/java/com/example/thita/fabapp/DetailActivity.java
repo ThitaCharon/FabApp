@@ -173,6 +173,7 @@ public class DetailActivity extends AppCompatActivity {
         mQuantity.setText("");
         mUnit.setText("");
         mImageView.setImageBitmap(null);
+        mImageView.setBackgroundResource(R.drawable.bg_no_image);
         mChooseImageBtn.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         mChooseImageBtn.setText(R.string.add_image);
     }
