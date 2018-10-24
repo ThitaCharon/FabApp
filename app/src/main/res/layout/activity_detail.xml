@@ -26,7 +26,8 @@
             android:layout_height="200dp"
             android:scaleType="centerCrop"
             android:src="@drawable/bg_no_image"
-            android:background="@color/colorGray" />
+            android:background="@color/colorGray"
+            android:contentDescription="@string/image_description"/>
 
 
         <LinearLayout
@@ -149,7 +150,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/unit_text"
-            android:hint="@string/Unit_lable_hint"
+            android:hint="@string/Unit_label_hint"
             android:gravity="center_horizontal"/>
     </android.support.design.widget.TextInputLayout>
 
